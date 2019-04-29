@@ -1,0 +1,84 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>Pcitc</groupId>
+  <artifactId>SpringMVCDemo</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>SpringMVCDemo Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+		    <dependency>
+		      <groupId>junit</groupId>
+		      <artifactId>junit</artifactId>
+		      <version>3.8.1</version>
+		      <scope>test</scope>
+		    </dependency>
+		    <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+		  	<dependency>
+			    <groupId>javax.servlet</groupId>
+			    <artifactId>javax.servlet-api</artifactId>
+			    <version>4.0.1</version>
+			      <!--  对于scope=compile的情况（默认scope),也就是说这个项目在编译，测试，运行阶段都需要这个artifact对应的jar包在classpath中。
+而对于scope=provided的情况，则可以认为这个provided是目标容器已经provide这个artifact。换句话说，它只影响到编译，测试阶段。在编译测试阶段，我们需要这个artifact对应的jar包在classpath中，而在运行阶段，假定目标的容器（比如我们这里的liferay容器）已经提供了这个jar包，所以无需我们这个artifact对应的jar包了。 -->
+			  <!--  把scope的值填成provided就可以了，意思是在打包时不把这个架包打进去。 -->
+			    <scope>provided</scope>	
+			    <!--  <scope>compile</scope> -->
+			</dependency>	    
+  </dependencies>
+  <build>
+		    <finalName>SpringMVCDemo</finalName>
+		    <defaultGoal>package</defaultGoal>
+		    
+		    <pluginManagement>
+			        <plugins>
+			       <!--  maven打包时打包本地的jar包了-->
+			                  <plugin>
+                                       <artifactId>maven-compiler-plugin</artifactId> 
+                                       <configuration> 
+                                              <source>1.8</source> 
+                                              <target>1.8</target> 
+                                              <encoding>UTF-8</encoding>
+                                               <!--配置本地jar包在项目的存放路径--> 
+                                                <compilerArguments> 
+                                              <!--   多个路径用：隔开 -->
+                                                 <extdirs>${project.basedir}/src/main/webapp/WEB-INF/mylib/spring-framework-5.1.6.RELEASE/libs:${env.JAVA_HOME}/jre/lib/ext</extdirs>                                               
+                                                </compilerArguments> 
+                                                </configuration> 
+                              </plugin> 
+                              <plugin> 
+                                            <groupId>org.apache.maven.plugins</groupId> 
+                                            <artifactId>maven-war-plugin</artifactId> 
+                                            <configuration>
+                                                      <webResources> 
+                                                       <!-- 对于${project.basedir}/src/main/webapp/WEB-INF/mylib/spring-framework-5.1.6.RELEASE/libs，web-inf中的文件夹默认会拷贝到target/我的项目的web-inf中，所以这里mylib文件夹会整体拷贝到web-inf目录中，所以最好把mylib文件夹放在web-inf以外的其他位置 -->
+                                                    <!--  为了让tomcat能够识别jar包，我现在只能把所有的spring,hibernate, struts等jar包全部直接放到web-inf下面的lib目录，也就是/lib/*.jar -->
+                                                            <resource> 
+		                                                            <!-- 配置本地jar包在项目中的存放路径this is relative to the pom.xml directory -->
+		                                                             <directory>src/main/webapp/WEB-INF/mylib/spring-framework-5.1.6.RELEASE/libs</directory> 
+		                                                             <!-- 配置打包时jar包的存放路径  -->
+		                                                             <targetPath>WEB-INF/lib</targetPath> 
+		                                                             <includes>
+		                                                                      <include>**/*.jar</include> 
+		                                                             </includes> 
+                                                             </resource> 
+                                                              <resource> 
+		                                                            <!-- 配置本地jar包在项目中的存放路径 -->
+		                                                             <directory>${env.JAVA_HOME}/jre/lib/ext</directory> 
+		                                                             <!-- 配置打包时jar包的存放路径  -->
+		                                                             <targetPath>WEB-INF/lib</targetPath> 
+		                                                             <includes>
+		                                                                      <include>**/*.jar</include> 
+		                                                             </includes> 
+                                                             </resource> 
+                                                     </webResources> 
+                                             </configuration>
+                                </plugin>
+
+			        </plugins>
+          </pluginManagement>     
+  </build>
+  
+
+  
+</project>
